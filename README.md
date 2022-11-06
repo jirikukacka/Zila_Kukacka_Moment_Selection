@@ -2,7 +2,7 @@
 
 ---
 
-Zila, E., Kukacka, J. (November 2022), [DOI](http://dx.doi.org/10.2139/ssrn.4083182).
+Zila, E., Kukacka, J. (November 2022), Moment set selection for the SMM using simple machine learning, [DOI](http://dx.doi.org/10.2139/ssrn.4083182).
 
 This database is initialized as a Git.
 
