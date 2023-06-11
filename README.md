@@ -32,6 +32,10 @@ julia> Pkg.activate(pwd())
 julia> Pkg.instantiate()
 ```
 
+## Data
+
+Empirical data used for empirical estimation are located in the `data/` folder. 
+
 ## Reproduction
 
 The repository contains all the code needed to reproduce experiments from the paper for the Markov-switching multifractal (MSM) model. The necessary scripts are located in the `scripts/` folder.
@@ -41,12 +45,12 @@ To estimate the MSM model using the three benchmark moment sets employed in the 
 julia scripts/main_markov256state_bench.jl
 ```
 
-To perform the backward stepwise moment elimination (BSME) algorithm as proposed in the paper to the MSM model, execute:
+To perform the backward stepwise moment elimination (BSME) algorithm as proposed in the paper, execute:
 ```
 julia scripts/main_markov256state_bsw.jl
 ```
 
-To perform the forward stepwise moment selection (FSMS) algorithm as proposed in the paper to the MSM model, execute:
+To perform the forward stepwise moment selection (FSMS) algorithm as proposed in the paper, execute:
 ```
 julia scripts/main_markov256state_fsw.jl
 ```
@@ -54,10 +58,6 @@ julia scripts/main_markov256state_fsw.jl
 ## Results
 
 For the Markov-switching multifractal model, the full set of results is located in the `results/` folder. The corresponding visualizations are located in the `plots/` folder. In order to reproduce them, please, refer to the `notebooks/markov256state.ipynb` Jupyter notebook file executable with a Julia kernel.
-
-## Data
-
-Empirical data used for empirical estimation are located in the `data/` folder. 
 
 ## License
 
