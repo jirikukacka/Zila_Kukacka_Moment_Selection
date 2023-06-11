@@ -57,6 +57,24 @@ function foldername_alg_replace(foldername::String, newalg::String)
     return join(foldername_split, "_")
 end
 
+"""
+    foldername_mod_set_retrieve(foldername)
+
+Retrieve model setup dictionary from from a given foldername.
+
+# Arguments
+- `foldername::String`: foldername to retrieve model setup from
+"""
+function foldername_mod_set_retrieve(foldername)
+    foldername_split = split(foldername, "_")
+
+    mod_set = Dict("model" => foldername_split[1],
+                   "cali" => foldername_split[3],
+                   "cons" => foldername_split[4])
+
+    return mod_set
+end
+
 
 ###########
 # RESULTS #
