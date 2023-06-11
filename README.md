@@ -1,6 +1,6 @@
 # Moment set selection for the SMM using simple machine learning
 
-This repository contains the official implementation of [Moment set selection for the SMM using simple machine learning](https://doi.org/10.1016/j.jebo.2023.05.040) by [Eric Zila](zila.eric@gmail.com) and [Jiri Kukacka](jiri.kukacka@fsv.cuni.cz).
+This repository contains the official implementation of [Moment set selection for the SMM using simple machine learning](https://doi.org/10.1016/j.jebo.2023.05.040) by [Eric Zila](mailto:zila.eric@gmail.com) and [Jiri Kukacka](mailto:jiri.kukacka@fsv.cuni.cz).
 
 If you find our work useful, we encourage you to use the following citation:
 ```
@@ -48,7 +48,7 @@ julia scripts/main_markov256state_bsw.jl
 
 To perform the forward stepwise moment selection (FSMS) algorithm as proposed in the paper to the MSM model, execute:
 ```
-julia scripts/main_markov256state_bsw.jl
+julia scripts/main_markov256state_fsw.jl
 ```
 
 ## Results
