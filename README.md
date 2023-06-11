@@ -25,7 +25,13 @@ git clone git@github.com:jirikukacka/Zila_Kukacka_Moment_Selection.git
 cd Zila_Kukacka_Moment_Selection/
 ```
 
-To install the necessary packages, run [Julia]((https://julialang.org/)) (>= 1.6.1) in the root directory and execute:
+To install [DrWatson](https://juliadynamics.github.io/DrWatson.jl/dev/), run [Julia](https://julialang.org/) and execute:
+```
+julia> using Pkg
+julia> Pkg.add("DrWatson")
+```
+
+To install the required packages, run [Julia](https://julialang.org/) (>= 1.6.1) in the root directory and execute:
 ```
 julia> using Pkg
 julia> Pkg.activate(pwd())
