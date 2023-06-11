@@ -5,51 +5,52 @@ include("fcn_metric.jl")
 include("fcn_data.jl")
 include("list_models.jl")
 
+##############
+# FOLDERNAME #
+##############
 
-###############
-# FOLDERNAMES #
-###############
+"""
+    make_foldername(setup)
 
-# concatenate settings into results foldername
-function make_foldername(ml_set, mod_set, opt_set, wgt_set)
-    alg = ml_set["method"]
-    if alg == "sms" && !isnothing(ml_set["bench"])
-        alg = ml_set["bench"]
+Concatenate settings into a comprehensive foldername.
+
+# Arguments
+- `setup::Dict`: full setup dictionary
+"""
+function make_foldername(setup::Dict)
+    alg = setup["ml"]["method"]
+    if alg == "sms" && !isnothing(setup["ml"]["bench"])
+        alg = setup["ml"]["bench"]
     end
 
-    foldername = string(mod_set["model"], "_",
+    foldername = string(setup["mod"]["model"], "_",
                         alg, "_",
-                        mod_set["cali"], "_",
-                        mod_set["cons"], "_",
-                        "rep", smm_set["rep"], "_",
-                        "obs", mod_set["obs"], "_",
-                        "burn", mod_set["burn"], "_",
-                        "inits", opt_set["inits"], "_",
-                        "sim", opt_set["sim"], "_",
-                        "iter", opt_set["iter"], "_",
-                        wgt_set["method"], "_",
-                        "blocksize", wgt_set["blocksize"], "_",
-                        "bootsize", wgt_set["bootsize"], "_",
-                        "blockcount", wgt_set["blockcount"])
+                        setup["mod"]["cali"], "_",
+                        setup["mod"]["cons"], "_",
+                        "rep", setup["smm"]["rep"], "_",
+                        "obs", setup["mod"]["obs"], "_",
+                        "burn", setup["mod"]["burn"], "_",
+                        "inits", setup["opt"]["inits"], "_",
+                        "sim", setup["opt"]["sim"], "_",
+                        "iter", setup["opt"]["iter"], "_",
+                        setup["wgt"]["method"], "_",
+                        "blocksize", setup["wgt"]["blocksize"], "_",
+                        "bootsize", setup["wgt"]["bootsize"], "_",
+                        "blockcount", setup["wgt"]["blockcount"])
 
     return foldername
 end
 
+"""
+    foldername_alg_replace(foldername, newalg)
 
-# retrieve model settings from foldername
-function foldername_mod_set_retrieve(foldername)
-    foldername_split = split(foldername, "_")
+Replace algorithm name in a foldername for a given string.
 
-    mod_set = Dict("model" => foldername_split[1],
-                   "cali" => foldername_split[3],
-                   "cons" => foldername_split[4])
-
-    return mod_set
-end
-
-
-# replace algorithm string in foldername for an alternative
-function foldername_alg_replace(foldername, newalg)
+# Arguments
+- `foldername::String`: original foldername
+- `newalg::String`: updated foldername with a new algorithm string
+"""
+function foldername_alg_replace(foldername::String, newalg::String)
     foldername_split = split(foldername, "_")
     foldername_split[2] = newalg
 
@@ -61,16 +62,31 @@ end
 # RESULTS #
 ###########
 
-# save results to the "results/" folder
-function save_results(results, foldername, idx=0)
+"""
+    save_results(results, foldername, idx=0)
+
+Save results at a given location.
+
+# Arguments
+- `results`: set of results
+- `foldername::String`: location to store the set of results at
+- `idx::Int`: initial indexing value
+"""
+function save_results(results, foldername::String, idx=0)
     for i in eachindex(results)
         save(resultsdir(foldername, "set$(idx+i).jld"), "results", results[i])
     end
 end
 
+"""
+    load_results(foldername)
 
-# load results from the "results/" folder
-function load_results(foldername)
+Load results from a given location.
+
+# Arguments
+- `foldername::String`: location to load the set of results from
+"""
+function load_results(foldername::String)
     folder_sets = [SubString(x, 1, 3) for x in readdir(resultsdir(foldername))]
     set_count = sum([x == "set" for x in folder_sets])
 
@@ -88,9 +104,15 @@ function load_results(foldername)
     return results
 end
 
+"""
+    load_bench(foldername)
 
-# load benchmarks from the "results/bench/" folder
-function load_bench(foldername)
+Load benchmarks for a given set of results.
+
+# Arguments
+- `foldername::String`: location of the set of results
+"""
+function load_bench(foldername::String)
     results = []
 
     for bench in ["chl4", "chl15", "fw9"]
@@ -114,6 +136,16 @@ end
 # OTHER #
 #########
 
+"""
+    results_best(results, cali)
+
+Retrieve the best performing moment set set for each round of the selection 
+process given a set of results and its calibration.
+
+# Arguments
+- `results`: set of results
+- `cali`: calibration of the given set of results
+"""
 function results_best(results, cali)
     rounds = [sum(results[i][2]) for i in eachindex(results)]
 
@@ -131,23 +163,18 @@ function results_best(results, cali)
     return (rsb, best_idx)
 end
 
+"""
+    print_evolution(results, type)
 
-function print_rmse(results, mod_set, set=nothing)
-    cali = get_model_cali(mod_set)
-    results_rmse = get_rmse(results, cali)
+Print evolution of the selection process given a set of results and the 
+direction of the selection process.
 
-    println("RMSE values:")
-    if isnothing(set)
-        for i in eachindex(results_rmse)
-            println("set $i : $(results_rmse[i])")
-        end
-    else
-        println("set $set : $(results_rmse[set])")
-    end
-end
-
-
-function print_evolution(results, type)
+# Arguments
+- `results`: set of results
+- `type::String`: `"bsw"` for backward stepwise moemnt elimination, `"fsw"` for 
+forward stepwise moment selection
+"""
+function print_evolution(results, type::String)
     cali = get_model_cali(mod_set)
 
     mom_names = ["RAW-VAR", "RAW-KURT", "RAW-AC1", "RAW-AC2", "RAW-AC3",
@@ -157,7 +184,7 @@ function print_evolution(results, type)
                  "SQR-AC20", "SQR-AC25"]
 
     rsb, _ = results_best(results, cali)
-    mom_series = [] # storage of added/removed moments
+    mom_series = [] # storage of added/removed moments in each round
 
     if type == "fsw" || type == "bsw"
         is_fsw = type == "fsw"
@@ -176,7 +203,6 @@ function print_evolution(results, type)
             push!(mom_series, mom_names[argmax(rsb[length(rsb)][2])])
         end
         
-        #ret = is_fsw ? join(mom_series, " > ") : join(mom_series, " < ")
         ret = join(mom_series, " \$\\rightarrow\$ ")
 
         print(ret)

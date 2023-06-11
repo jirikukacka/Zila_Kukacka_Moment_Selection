@@ -27,7 +27,7 @@ function smm_init(setup::Dict)
     end
 
     # generate name for results folder
-    foldername = make_foldername(setup["ml"], setup["mod"], setup["opt"], setup["wgt"])
+    foldername = make_foldername(setup)
 
     # forward stepwise moment selection
     if setup["ml"]["method"] == "fsw"
